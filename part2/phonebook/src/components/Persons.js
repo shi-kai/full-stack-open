@@ -1,5 +1,5 @@
 const Persons = (props) => {
-  const { persons, keyword } = props;
+  const { persons, keyword, deletePerson } = props;
 
   return (
     <div>
@@ -11,6 +11,13 @@ const Persons = (props) => {
           return (
             <p key={person.id}>
               {person.name} {person.number}
+              <button
+                onClick={() => {
+                  deletePerson(person);
+                }}
+              >
+                delete
+              </button>
             </p>
           );
         })}

@@ -1,9 +1,14 @@
 const PersonForm = (props) => {
-  const { addName, newName, handleNameChange, newNumber, handleNumberChange } =
-    props;
+  const {
+    addPerson,
+    newName,
+    handleNameChange,
+    newNumber,
+    handleNumberChange,
+  } = props;
 
   return (
-    <form onSubmit={addName}>
+    <form onSubmit={addPerson}>
       <div>
         name: <input value={newName} onChange={handleNameChange} />
       </div>

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
-import Filter from "./Filter";
-import PersonForm from "./PersonForm";
-import Persons from "./Persons";
+import { useEffect, useState } from "react";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
+import personService from "./services/personService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,27 +12,41 @@ const App = () => {
   const [keyword, setKeyword] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
   }, []);
 
-  const addName = (event) => {
+  const addPerson = (event) => {
     event.preventDefault();
+
     const person = persons.find((person) => {
       return person.name === newName;
     });
+
     if (person === undefined) {
       const personObject = {
         name: newName,
         number: newNumber,
-        id: persons.length + 1,
       };
-      setPersons(persons.concat(personObject));
-      setNewName("");
-      setNewNumber("");
+
+      personService.create(personObject).then((returnPerson) => {
+        setPersons(persons.concat(returnPerson));
+        setNewName("");
+        setNewNumber("");
+      });
     } else {
-      window.alert(`${newName} is already added to phonebook`);
+      const isConfirm = window.confirm(
+        `${person.name} is already added to phonebook, replace the old number with the new one?`
+      );
+
+      if (isConfirm) {
+        const changedPerson = { ...person, number: newNumber };
+
+        personService.update(person.id, changedPerson).then((returnPerson) => {
+          setPersons(
+            persons.map((item) => (item.id === person.id ? returnPerson : item))
+          );
+        });
+      }
     }
   };
 
@@ -47,20 +62,34 @@ const App = () => {
     setKeyword(event.target.value);
   };
 
+  const deletePerson = (person) => {
+    const isConfirm = window.confirm(`Delete ${person.name}?`);
+
+    if (isConfirm) {
+      personService.remove().then((response) => {
+        setPersons(persons.filter(({ id }) => id !== person.id));
+      });
+    }
+  };
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter keyword={keyword} hanldeKeywordChange={hanldeKeywordChange} />
       <h3>add a new</h3>
       <PersonForm
-        addName={addName}
+        addPerson={addPerson}
         newName={newName}
         handleNameChange={handleNameChange}
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons persons={persons} keyword={keyword} />
+      <Persons
+        persons={persons}
+        keyword={keyword}
+        deletePerson={deletePerson}
+      />
     </div>
   );
 };
