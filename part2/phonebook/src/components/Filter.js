@@ -1,11 +1,9 @@
-const Filter = (props) => {
-  const { keyword, hanldeKeywordChange } = props;
-
+const Filter = ({ value, handleChange }) => {
   return (
-    <div>
-      filter shown with
-      <input value={keyword} onChange={hanldeKeywordChange} />
-    </div>
+    <>
+      Filter shown with
+      <input value={value} onChange={handleChange} />
+    </>
   );
 };
 

@@ -1,27 +1,16 @@
-const Persons = (props) => {
-  const { persons, keyword, deletePerson } = props;
-
+const Persons = ({ persons, handleDelete }) => {
   return (
-    <div>
-      {persons
-        .filter((person) => {
-          return person.name.toLowerCase().includes(keyword.toLowerCase());
-        })
-        .map((person) => {
-          return (
-            <p key={person.id}>
-              {person.name} {person.number}
-              <button
-                onClick={() => {
-                  deletePerson(person);
-                }}
-              >
-                delete
-              </button>
-            </p>
-          );
-        })}
-    </div>
+    <>
+      <h3>Numbers</h3>
+      {persons.map((person) => {
+        return (
+          <p key={person.id}>
+            {person.name} {person.number}
+            <button onClick={() => handleDelete(person.id)}>delete</button>
+          </p>
+        );
+      })}
+    </>
   );
 };
 
