@@ -1,33 +1,15 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+const Weather = ({ weather, city }) => {
+  if (weather === null) return null;
 
-const Weather = (props) => {
-  const [info, setInfo] = useState({});
-  const {
-    latlng: [lat, lng],
-  } = props;
-
-  useEffect(() => {
-    axios
-      .get(
-        `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.REACT_APP_API_KEY}`
-      )
-      .then((response) => {
-        setInfo(response.data);
-      });
-  }, [lat, lng]);
+  const icon = `http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`;
 
   return (
-    Object.keys(info).length > 0 && (
-      <>
-        <p>temperature {Math.floor(info.main.temp - 273.15)} Celsius</p>
-        <img
-          src={`http://openweathermap.org/img/wn/${info.weather[0].icon}@2x.png`}
-          alt="weather icon"
-        />
-        <p>wind {info.wind.speed} m/s</p>
-      </>
-    )
+    <>
+      <h3>Weather in {city}</h3>
+      <p>temperature {weather.main.temp} Celsius</p>
+      <img src={icon} alt={`icon for ${weather.weather[0].description}`} />
+      <p>wind {weather.wind.speed} m/s</p>
+    </>
   );
 };
 
